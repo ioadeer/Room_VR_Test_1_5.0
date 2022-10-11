@@ -19,7 +19,7 @@ public:
 	virtual void HandTriggered() {};
 	virtual void HandPressed() {};
 
-private:
+protected:
 	
 	UPROPERTY(VisibleAnywhere)
 	class UMotionControllerComponent* MotionController;
