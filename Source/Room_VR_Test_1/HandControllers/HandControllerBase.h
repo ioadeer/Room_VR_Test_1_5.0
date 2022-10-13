@@ -18,6 +18,7 @@ public:
 	void SetHand(EControllerHand Hand) { MotionController->SetTrackingSource(Hand); }
 	virtual void HandTriggered() {};
 	virtual void HandPressed() {};
+	virtual void MainIndexTriggerAction() {};
 
 protected:
 	

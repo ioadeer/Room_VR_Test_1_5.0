@@ -2,7 +2,15 @@
 
 
 #include "VRPawn.h"
+
+#include "Camera/PlayerCameraManager.h"
 #include "Camera/CameraComponent.h"
+
+#include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
+
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AVRPawn::AVRPawn()
@@ -15,6 +23,8 @@ AVRPawn::AVRPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
+
+	CameraManager = Cast<APlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +71,54 @@ void AVRPawn::Tick(float DeltaTime)
 void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction(TEXT("RightIndexTrigger"), EInputEvent::IE_Released, this, &AVRPawn::RightIndexTriggerAction);
+	PlayerInputComponent->BindAction(TEXT("LeftIndexTrigger"), EInputEvent::IE_Released, this, &AVRPawn::LeftIndexTriggerAction);
 
 }
 
+void AVRPawn::RightIndexTriggerAction() {
+	RightHandController->MainIndexTriggerAction();
+}
+
+void AVRPawn::LeftIndexTriggerAction() {
+	LeftHandController->MainIndexTriggerAction();
+}
+
+void AVRPawn::BeginTeleport(FVector Destination)
+{
+	bCanTeleport = false;
+
+	if (CameraManager)
+	{
+		CameraManager->StartCameraFade(0, 1, FadeOutTime, FColor(0));
+		FTimerHandle PlayerTeleportHandle;
+		FTimerDelegate PlayerTeleportDelegate = FTimerDelegate::CreateUObject(
+			this,
+			&AVRPawn::Teleport,
+			Destination
+		);
+		UWorld* MyWorld = GetWorld();
+		if (!MyWorld)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NULL POINTER TO WORLD"));
+			return;
+		}
+		GetWorld()->GetTimerManager().SetTimer(PlayerTeleportHandle, PlayerTeleportDelegate, FadeOutTime, false);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Null Pointer to Camera Manager"));
+	}
+
+}
+
+void AVRPawn::Teleport(FVector Destination)
+{
+	FVector NewLocation = Destination;
+	// NewLocation.Z += GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	//NewLocation += GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * GetActorUpVector();
+	SetActorLocation(NewLocation);
+	CameraManager->StartCameraFade(1, 0, FadeInTime, FColor(0));
+
+	bCanTeleport = true;
+}

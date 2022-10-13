@@ -16,7 +16,16 @@ void ABasicHandController::HandPressed()
 {
 }
 
+void ABasicHandController::MainIndexTriggerAction()
+{
+}
+
 void ABasicHandController::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABasicHandController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }

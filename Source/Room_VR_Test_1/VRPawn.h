@@ -26,6 +26,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void StartTeleport(FVector Destination) { if (bCanTeleport) BeginTeleport(Destination); };
+
 private:
 	//Declaration
 	UPROPERTY()
@@ -40,6 +43,8 @@ private:
 	UPROPERTY()
 	AHandControllerBase* LeftHandController;
 
+	class APlayerCameraManager* CameraManager;
+
 
 	//Configuration
 	// Aca se pasa blueprint de Hand Controller
@@ -51,5 +56,21 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float PlayerStartZOffset = 100.f;
+
+	UPROPERTY(EditAnywhere)
+	float FadeOutTime = 0.25f;
+
+	UPROPERTY(EditAnywhere)
+	float FadeInTime = 0.25f;
+
+	//Methods
+	void RightIndexTriggerAction();
+	void LeftIndexTriggerAction();
+
+	void BeginTeleport(FVector Destination);
+	void Teleport(FVector Destination);
+
+	// State
+	bool bCanTeleport = true;
 	
 };

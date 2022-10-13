@@ -24,7 +24,8 @@ protected:
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-       
+    FVector GetDestination() { return Destination; }
+    virtual void MainIndexTriggerAction() override;
 
 private: 
     //methods
@@ -66,5 +67,8 @@ private:
 
     UPROPERTY(EditDefaultsOnly)
     class UMaterialInterface* TeleportArchMaterial;
+
+    //State
+    FVector Destination;
         
 };

@@ -18,8 +18,10 @@ public:
 	ABasicHandController();
 	virtual void HandTriggered() override;
 	virtual void HandPressed() override;
+	virtual void MainIndexTriggerAction() override;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 };
