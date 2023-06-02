@@ -19,6 +19,7 @@ public:
 	virtual void HandTriggered() {};
 	virtual void HandPressed() {};
 	virtual void MainIndexTriggerAction() {};
+	virtual void ThumbstickAction(FVector Value) {};
 
 protected:
 	

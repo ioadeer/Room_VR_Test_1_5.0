@@ -11,6 +11,12 @@
 
 #include "Kismet/GameplayStatics.h"
 
+//#include "EnhancedInput/Public/InputMappingContext.h"
+#include "InputMappingContext.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
+
 
 // Sets default values
 AVRPawn::AVRPawn()
@@ -19,7 +25,8 @@ AVRPawn::AVRPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	VRRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VRRoot"));
-	VRRoot->SetupAttachment(GetRootComponent());
+	//VRRoot->SetupAttachment(GetRootComponent());
+	SetRootComponent(VRRoot);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
@@ -70,18 +77,62 @@ void AVRPawn::Tick(float DeltaTime)
 // Called to bind functionality to input
 void AVRPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction(TEXT("RightIndexTrigger"), EInputEvent::IE_Released, this, &AVRPawn::RightIndexTriggerAction);
-	PlayerInputComponent->BindAction(TEXT("LeftIndexTrigger"), EInputEvent::IE_Released, this, &AVRPawn::LeftIndexTriggerAction);
-
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(PC->GetLocalPlayer()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			if (!InputMappingContext.IsNull())
+			{
+				
+				InputSystem->AddMappingContext(InputMappingContext.LoadSynchronous(),1);
+				UE_LOG(LogTemp, Warning, TEXT("Setting input system context..."));
+			}
+		}
+	}
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	// You can bind to any of the trigger events here by changing the "ETriggerEvent" enum value
+	UE_LOG(LogTemp, Warning, TEXT("Binding actions..."));
+	Input->BindAction(IA_RightTrigger, ETriggerEvent::Triggered, this, &AVRPawn::RightIndexTriggerAction);
+	Input->BindAction(IA_LeftTrigger, ETriggerEvent::Triggered, this, &AVRPawn::LeftIndexTriggerAction);
+	Input->BindAction(IA_RightThumbstick, ETriggerEvent::Triggered, this, &AVRPawn::RightThumbstickAction);
+	Input->BindAction(IA_LeftThumbstick, ETriggerEvent::Triggered, this, &AVRPawn::LeftThumbstickAction);
+	
 }
 
-void AVRPawn::RightIndexTriggerAction() {
+void AVRPawn::RightIndexTriggerAction(const FInputActionValue& Value) {
+	UE_LOG(LogTemp, Warning, TEXT("Right index trigger action"));
 	RightHandController->MainIndexTriggerAction();
 }
 
-void AVRPawn::LeftIndexTriggerAction() {
+void AVRPawn::LeftIndexTriggerAction(const FInputActionValue& Value) {
+	UE_LOG(LogTemp, Warning, TEXT("Left index trigger action"));
 	LeftHandController->MainIndexTriggerAction();
+}
+
+void AVRPawn::RightThumbstickAction(const FInputActionValue& Value)
+{
+	// deberia tener mas validacion esto
+	if (Value.GetMagnitude()!= 0.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Right thumbstick %s"), *Value.ToString());
+		FVector Temp(Value[0], Value[1], 0.f);
+		RightHandController->ThumbstickAction(Temp);
+
+	}
+
+}
+
+void AVRPawn::LeftThumbstickAction(const FInputActionValue& Value)
+{
+	// deberia tener mas validacion esto
+	if (Value.GetMagnitude() != 0.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Left thumbstick %s"), *Value.ToString());
+		FVector Temp(Value[0], Value[1], 0.f);
+		LeftHandController->ThumbstickAction(Temp);
+
+	}
 }
 
 void AVRPawn::BeginTeleport(FVector Destination)
@@ -115,10 +166,19 @@ void AVRPawn::BeginTeleport(FVector Destination)
 void AVRPawn::Teleport(FVector Destination)
 {
 	FVector NewLocation = Destination;
-	// NewLocation.Z += GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-	//NewLocation += GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * GetActorUpVector();
+
+	UE_LOG(LogTemp, Warning, TEXT("Posicion Z %s"), *NewLocation.ToString());
 	SetActorLocation(NewLocation);
 	CameraManager->StartCameraFade(1, 0, FadeInTime, FColor(0));
 
 	bCanTeleport = true;
+}
+
+UCameraComponent* AVRPawn::GetCamera()
+{
+	if (Camera)
+	{
+		return Camera;
+	}
+	return nullptr;
 }

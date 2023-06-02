@@ -2,15 +2,15 @@
 	"source": "UE",
 	"applications": [
 		{
-			"app_key": "application.generated.ue.room_vr_test_1-20979098.unrealeditor.exe",
+			"app_key": "application.generated.ue.room_vr_test_1-23901901.unrealeditor.exe",
 			"launch_type": "url",
 			"url": "steam://launch/",
-			"action_manifest_path": "C:/Users/Usuario/Documents/Unreal Projects/Room-VR-Lapso/Room_VR_Test_1_5.0/Config/SteamVRBindings/steamvr_manifest.json",
+			"action_manifest_path": "C:/Users/Usuario/Documents/Unreal Projects/Room_VR_Test_1_5.0/Config/SteamVRBindings/steamvr_manifest.json",
 			"strings":
 			{
 				"en_us":
 				{
-					"name": "Room_VR_Test_1-20979098 [UE Editor]"
+					"name": "Room_VR_Test_1-23901901 [UE Editor]"
 				}
 			}
 		}

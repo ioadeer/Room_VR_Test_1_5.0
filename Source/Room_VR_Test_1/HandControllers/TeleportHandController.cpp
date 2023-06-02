@@ -160,7 +160,10 @@ void ATeleportHandController::UpdateDestinationMarker()
     if (FindTeleportDestination(Path, Location))
     {
         DestinationMarker->SetVisibility(true);
-        DestinationMarker->SetWorldLocation(Location);
+        FVector TempLocation = Location;
+        TempLocation.Z -= 50;
+        DestinationMarker->SetWorldLocation(TempLocation);
+        //UE_LOG(LogTemp,Warning,TEXT("Location %s"), *Location.ToString());
         Destination = Location;
         DrawTeleportPath(Path);
     }

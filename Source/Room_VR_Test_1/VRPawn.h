@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "HandControllers/HandControllerBase.h"
+#include "InputAction.h"
 #include "VRPawn.generated.h"
+
 
 UCLASS()
 class ROOM_VR_TEST_1_API AVRPawn : public APawn
@@ -29,6 +31,7 @@ public:
 
 	void StartTeleport(FVector Destination) { if (bCanTeleport) BeginTeleport(Destination); };
 
+
 private:
 	//Declaration
 	UPROPERTY()
@@ -45,8 +48,23 @@ private:
 
 	class APlayerCameraManager* CameraManager;
 
+//Configuration
+	// Input
+	UPROPERTY(EditDefaultsOnly, Category = "Controls|Input Mappings")
+	TSoftObjectPtr<class UInputMappingContext> InputMappingContext;
 
-	//Configuration
+	UPROPERTY(EditDefaultsOnly, Category = "Controls|Input Mappings")
+	UInputAction* IA_RightTrigger;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls|Input Mappings")
+	UInputAction* IA_LeftTrigger;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls|Input Mappings")
+	UInputAction* IA_RightThumbstick;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls|Input Mappings")
+	UInputAction* IA_LeftThumbstick;
+
 	// Aca se pasa blueprint de Hand Controller
 	UPROPERTY(EditDefaultsOnly, DisplayName="Right Controller BP class")
 	TSubclassOf<AHandControllerBase> RightHandControllerClass;
@@ -64,13 +82,19 @@ private:
 	float FadeInTime = 0.25f;
 
 	//Methods
-	void RightIndexTriggerAction();
-	void LeftIndexTriggerAction();
+	void RightIndexTriggerAction(const FInputActionValue& Value);
+	void LeftIndexTriggerAction(const FInputActionValue& Value);
+
+	void RightThumbstickAction(const FInputActionValue& Value);
+	void LeftThumbstickAction(const FInputActionValue& Value);
 
 	void BeginTeleport(FVector Destination);
 	void Teleport(FVector Destination);
 
 	// State
 	bool bCanTeleport = true;
+
+	public:
+	UCameraComponent* GetCamera();
 	
 };

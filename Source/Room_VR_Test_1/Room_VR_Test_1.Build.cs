@@ -8,7 +8,16 @@ public class Room_VR_Test_1 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(new string[]
+  {
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"HeadMountedDisplay",
+			"NavigationSystem",
+			"EnhancedInput"
+  });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

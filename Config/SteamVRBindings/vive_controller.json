@@ -6,30 +6,7 @@
 	{
 		"/actions/main":
 		{
-			"sources": [
-				{
-					"mode": "trigger",
-					"path": "/user/hand/right/input/trigger",
-					"inputs":
-					{
-						"click":
-						{
-							"output": "/actions/main/in/RightIndexTrigger"
-						}
-					}
-				},
-				{
-					"mode": "trigger",
-					"path": "/user/hand/left/input/trigger",
-					"inputs":
-					{
-						"click":
-						{
-							"output": "/actions/main/in/LeftIndexTrigger"
-						}
-					}
-				}
-			],
+			"sources": [],
 			"poses": [
 				{
 					"output": "/actions/main/in/controllerleft",
@@ -63,5 +40,5 @@
 			]
 		}
 	},
-	"description": "Room_VR_Test_1-20979098"
+	"description": "Room_VR_Test_1-23901901"
 }
